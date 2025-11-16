@@ -1,0 +1,1970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NEET Mock Platform – Multiple Tests with Sections & Export</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      background: #f3f4f6;
+      color: #111827;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 20px 20px 28px;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    header h1 {
+      font-size: 1.7rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #2563eb, #16a34a);
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      font-size: 0.95rem;
+      color: #4b5563;
+    }
+
+    .chip-row {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .chip {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      color: #4b5563;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.4fr) minmax(0, 1.3fr);
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .filter-btn {
+      font-size: 0.8rem;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      background: white;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .filter-btn.active {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+
+    .filter-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(15, 23, 42, 0.1);
+    }
+
+    .test-control {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.8rem;
+    }
+
+    .test-control label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    #testSelect {
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      font-size: 0.8rem;
+      max-width: 100%;
+    }
+
+    .timer-difficulty {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-end;
+      justify-content: center;
+      min-width: 230px;
+    }
+
+    .badge {
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      display: inline-block;
+    }
+
+    .timer-badge {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .role-switch {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: #4b5563;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .role-btn {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .role-btn.active-role {
+      background: #111827;
+      color: #f9fafb;
+      border-color: #111827;
+    }
+
+    .marks-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-end;
+      font-size: 0.78rem;
+    }
+
+    .marks-edit {
+      display: none;
+      gap: 4px;
+      align-items: center;
+      flex-wrap: wrap;
+      font-size: 0.75rem;
+    }
+
+    .marks-edit label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .marks-edit input {
+      width: 52px;
+      padding: 2px 4px;
+      font-size: 0.75rem;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
+    }
+
+    .questions {
+      margin-top: 10px;
+    }
+
+    .question-card {
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      background: #ffffff;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease,
+        transform 0.1s ease;
+    }
+
+    .question-card:hover {
+      border-color: #cbd5f5;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.06);
+      transform: translateY(-1px);
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+      gap: 10px;
+    }
+
+    .question-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .question-meta {
+      font-size: 0.7rem;
+      color: #6b7280;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .topic-pill {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #f3f4ff;
+      color: #4338ca;
+      border: 1px solid #e0e7ff;
+    }
+
+    .options {
+      margin-top: 6px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      padding: 5px 7px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.12s ease, transform 0.05s ease;
+    }
+
+    .option-label:hover {
+      background: #f3f4f6;
+      transform: translateY(-0.5px);
+    }
+
+    .option-label input {
+      accent-color: #2563eb;
+    }
+
+    .result-bar {
+      margin-top: 14px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+
+    .result-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .stat-chip {
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .stat-chip.error {
+      background: #fef2f2;
+      color: #b91c1c;
+    }
+
+    .stat-chip.ok {
+      background: #ecfdf3;
+      color: #15803d;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease, transform 0.08s ease,
+        box-shadow 0.15s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, #2563eb, #1d4ed8);
+      color: white;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-secondary {
+      background: #111827;
+      color: #f9fafb;
+      box-shadow: 0 6px 15px rgba(15, 23, 42, 0.35);
+    }
+
+    .btn-outline {
+      background: white;
+      color: #111827;
+      border: 1px solid #d1d5db;
+      box-shadow: 0 4px 8px rgba(148, 163, 184, 0.3);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .correct {
+      border-color: #22c55e !important;
+      background: #f0fdf4;
+    }
+
+    .incorrect {
+      border-color: #ef4444 !important;
+      background: #fef2f2;
+    }
+
+    .correct-answer-text {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #166534;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    @media (max-width: 768px) {
+      .controls {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .timer-difficulty {
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 16px 12px 24px;
+      }
+
+      header h1 {
+        font-size: 1.4rem;
+      }
+
+      .question-card {
+        padding: 10px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>NEET Mock Platform – Multiple Tests</h1>
+      <p>Student / Host modes, NEET-style marking, timers, sections & CSV export.</p>
+      <div class="chip-row">
+        <span class="chip">Sample Test: 30 MCQs</span>
+        <span class="chip">NEET Full Test: 180Q from Bank</span>
+        <span class="chip">Sunday Auto-Test: 180Q</span>
+        <span class="chip">Default Marking: +4, −1 (Host can change)</span>
+      </div>
+    </header>
+
+    <section class="controls">
+      <!-- Subject filter -->
+      <div class="filters">
+        <span style="font-size:0.8rem;color:#4b5563;">Filter:</span>
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="biology">Biology</button>
+        <button class="filter-btn" data-filter="chemistry">Chemistry</button>
+        <button class="filter-btn" data-filter="physics">Physics</button>
+      </div>
+
+      <!-- Test selector & new test -->
+      <div class="test-control">
+        <label>
+          Test:
+          <select id="testSelect"></select>
+        </label>
+        <button id="newTestBtn" class="role-btn" type="button">
+          + New Test (Host)
+        </button>
+        <small style="color:#6b7280;">On Sundays, a dated NEET Full Test (180Q) is auto-created.</small>
+      </div>
+
+      <!-- Timer + marks + roles -->
+      <div class="timer-difficulty">
+        <span id="timerDisplay" class="badge timer-badge">Time: --:--</span>
+        <div class="marks-wrapper">
+          <span id="marksInfo" class="badge">Marks: +4, -1</span>
+          <div id="marksEditPanel" class="marks-edit">
+            <label>Right
+              <input type="number" id="marksRight" value="4" step="0.5" />
+            </label>
+            <label>Wrong
+              <input type="number" id="marksWrong" value="-1" step="0.5" />
+            </label>
+            <button id="applyMarksBtn" type="button" class="role-btn">
+              Apply
+            </button>
+          </div>
+        </div>
+        <div class="badge">Timer: 1 min per question</div>
+        <div class="role-switch">
+          <span>Profile:</span>
+          <button id="studentModeBtn" class="role-btn active-role" type="button">
+            Student
+          </button>
+          <button id="hostModeBtn" class="role-btn" type="button">
+            Host
+          </button>
+          <span id="roleLabel">(Current: Student)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Questions rendered here -->
+    <form id="quizForm" class="questions"></form>
+
+    <section class="result-bar">
+      <div class="result-stats">
+        <span id="scoreChip" class="stat-chip">Score: 0</span>
+        <span id="accuracyChip" class="stat-chip ok">Accuracy: 0%</span>
+        <span id="attemptChip" class="stat-chip">Attempted: 0 (Correct: 0, Wrong: 0)</span>
+        <span id="bioChip" class="stat-chip">Bio: 0/0 (0/0)</span>
+        <span id="chemChip" class="stat-chip">Chem: 0/0 (0/0)</span>
+        <span id="phyChip" class="stat-chip">Phy: 0/0 (0/0)</span>
+      </div>
+      <div class="buttons">
+        <button id="submitBtn" class="btn btn-primary" type="button">
+          ✅ Submit Test
+        </button>
+        <button id="resetBtn" class="btn btn-outline" type="button">
+          🔁 Reset
+        </button>
+        <button id="toggleExplainBtn" class="btn btn-secondary" type="button">
+          💡 Toggle Answers
+        </button>
+        <button id="exportBtn" class="btn btn-outline" type="button">
+          ⬇️ Export CSV (Host)
+        </button>
+      </div>
+    </section>
+
+    <footer>
+      Host PIN: <b>NEET123</b> · Host can change marks, create tests, edit questions, export results.
+      <br />
+      Section chips show: Correct/Total (Marks/Max Marks) for Bio, Chem, Phy.
+    </footer>
+  </div>
+
+  <script>
+    // ============ GLOBAL STATE ============
+    const tests = [];
+    let currentTestIndex = 0;
+    let currentRole = "student";
+    let hasSubmitted = false;
+
+    let timerSeconds = 0;
+    let timerInterval = null;
+
+    let correctMark = 4;
+    let wrongMark = -1;
+
+    let lastEvaluation = null; // for CSV export
+
+    // ============ DOM REFERENCES ============
+    const quizForm = document.getElementById("quizForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const toggleExplainBtn = document.getElementById("toggleExplainBtn");
+    const exportBtn = document.getElementById("exportBtn");
+    const scoreChip = document.getElementById("scoreChip");
+    const accuracyChip = document.getElementById("accuracyChip");
+    const attemptChip = document.getElementById("attemptChip");
+    const timerDisplay = document.getElementById("timerDisplay");
+    const bioChip = document.getElementById("bioChip");
+    const chemChip = document.getElementById("chemChip");
+    const phyChip = document.getElementById("phyChip");
+
+    const studentModeBtn = document.getElementById("studentModeBtn");
+    const hostModeBtn = document.getElementById("hostModeBtn");
+    const roleLabel = document.getElementById("roleLabel");
+
+    const marksInfo = document.getElementById("marksInfo");
+    const marksEditPanel = document.getElementById("marksEditPanel");
+    const marksRightInput = document.getElementById("marksRight");
+    const marksWrongInput = document.getElementById("marksWrong");
+    const applyMarksBtn = document.getElementById("applyMarksBtn");
+
+    const testSelect = document.getElementById("testSelect");
+    const newTestBtn = document.getElementById("newTestBtn");
+
+    // ============ HELPERS ============
+    function getCurrentTest() {
+      return tests[currentTestIndex];
+    }
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    }
+
+    function updateTimerDisplay() {
+      timerDisplay.textContent = "Time: " + formatTime(timerSeconds);
+    }
+
+    function updateMarksDisplay() {
+      const test = getCurrentTest();
+      const totalQ = test.questions.length;
+      marksInfo.textContent = `Marks: +${correctMark}, ${wrongMark} · Q: ${totalQ}`;
+      scoreChip.textContent = `Score: 0 / ${correctMark * totalQ}`;
+    }
+
+    function csvEscape(str) {
+      if (str === null || str === undefined) return '""';
+      return '"' + String(str).replace(/"/g, '""') + '"';
+    }
+
+    // ============ SAMPLE 30Q TEST ============
+    function createSample30QTest() {
+      const q = [];
+
+      // BIOLOGY (10)
+      q.push({
+        id: "Q1",
+        subject: "biology",
+        topicLabel: "Biology · Cell",
+        text: "(Cell – Unit of Life) Which of the following cell organelles has its own DNA and ribosomes?",
+        options: ["Lysosome", "Mitochondrion", "Golgi apparatus", "Rough endoplasmic reticulum"],
+        correctIndex: 1,
+        explanation: "Mitochondria are semi-autonomous with circular DNA and 70S ribosomes."
+      });
+      q.push({
+        id: "Q2",
+        subject: "biology",
+        topicLabel: "Biology · Cell",
+        text: "(Cell – Unit of Life) The fluid mosaic model of plasma membrane was proposed by:",
+        options: ["Robertson", "Singer and Nicolson", "Danielli and Davson", "Watson and Crick"],
+        correctIndex: 1,
+        explanation: "Singer and Nicolson proposed the fluid mosaic model."
+      });
+      q.push({
+        id: "Q3",
+        subject: "biology",
+        topicLabel: "Biology · Cell Cycle",
+        text: "(Cell Cycle & Division) Crossing over during meiosis occurs in:",
+        options: ["Zygotene of prophase I", "Pachytene of prophase I", "Anaphase I", "Metaphase II"],
+        correctIndex: 1,
+        explanation: "Crossing over occurs during pachytene of prophase I."
+      });
+      q.push({
+        id: "Q4",
+        subject: "biology",
+        topicLabel: "Biology · SRFP",
+        text: "(Sexual Reproduction in Flowering Plants) In angiosperms, the product of triple fusion is:",
+        options: ["Zygote", "Endosperm", "Embryo sac", "Pericarp"],
+        correctIndex: 1,
+        explanation: "Triple fusion gives triploid primary endosperm nucleus which forms endosperm."
+      });
+      q.push({
+        id: "Q5",
+        subject: "biology",
+        topicLabel: "Biology · Human Reproduction",
+        text: "(Human Reproduction) In humans, implantation of the blastocyst normally occurs in:",
+        options: ["Ampulla of oviduct", "Cervix of uterus", "Endometrium of uterus", "Vagina"],
+        correctIndex: 2,
+        explanation: "Blastocyst implants in the thickened endometrium."
+      });
+      q.push({
+        id: "Q6",
+        subject: "biology",
+        topicLabel: "Biology · Animal Kingdom",
+        text: "(Animal Kingdom) Which of the following is diploblastic and used as a model for regeneration studies?",
+        options: ["Hydra", "Ascaris", "Earthworm", "Frog"],
+        correctIndex: 0,
+        explanation: "Hydra (phylum Cnidaria) is diploblastic and highly regenerative."
+      });
+      q.push({
+        id: "Q7",
+        subject: "biology",
+        topicLabel: "Biology · Cell Cycle",
+        text: "(Cell Cycle) During the cell cycle, DNA replication occurs in:",
+        options: ["G₁ phase", "S phase", "G₂ phase", "M phase"],
+        correctIndex: 1,
+        explanation: "DNA replication occurs during S (synthetic) phase."
+      });
+      q.push({
+        id: "Q8",
+        subject: "biology",
+        topicLabel: "Biology · Human Reproduction",
+        text: "(Human Reproduction) In human females, the surge of which hormone induces ovulation?",
+        options: ["FSH", "Progesterone", "LH", "Oxytocin"],
+        correctIndex: 2,
+        explanation: "The mid-cycle LH surge triggers ovulation."
+      });
+      q.push({
+        id: "Q9",
+        subject: "biology",
+        topicLabel: "Biology · Reproductive Health",
+        text: "(Reproductive Health) Which contraceptive method also offers protection against sexually transmitted infections (STIs)?",
+        options: ["Oral contraceptive pills", "Copper-T", "Condom", "Vasectomy"],
+        correctIndex: 2,
+        explanation: "Condoms act as a barrier and reduce chances of STIs."
+      });
+      q.push({
+        id: "Q10",
+        subject: "biology",
+        topicLabel: "Biology · SRFP",
+        text: "(SRFP) In an ovule, the opening through which pollen tube usually enters is called:",
+        options: ["Chalaza", "Hilum", "Micropyle", "Integument"],
+        correctIndex: 2,
+        explanation: "Pollen tube commonly enters the ovule through the micropyle."
+      });
+
+      // CHEMISTRY (10)
+      q.push({
+        id: "Q11",
+        subject: "chemistry",
+        topicLabel: "Chemistry · Bonding",
+        text: "(Chemical Bonding) Which of the following molecules is linear due to sp hybridisation of the central atom?",
+        options: ["H₂O", "NH₃", "BeCl₂ (g)", "BF₃"],
+        correctIndex: 2,
+        explanation: "Be in gaseous BeCl₂ is sp hybridised, giving linear geometry."
+      });
+      q.push({
+        id: "Q12",
+        subject: "chemistry",
+        topicLabel: "Chemistry · Bonding",
+        text: "(Bonding / GOC) The total number of σ and π bonds in ethyne (HC≡CH) is:",
+        options: ["2σ, 2π", "3σ, 2π", "4σ, 1π", "5σ, 0π"],
+        correctIndex: 1,
+        explanation: "Ethyne has 3 σ-bonds and 2 π-bonds."
+      });
+      q.push({
+        id: "Q13",
+        subject: "chemistry",
+        topicLabel: "Chemistry · IUPAC",
+        text: "(IUPAC) The IUPAC name of (CH₃)₂CH–CH₂–CH₃ is:",
+        options: ["2-methylbutane", "3-methylbutane", "2-methylpropane", "Pentane"],
+        correctIndex: 3,
+        explanation: "Longest chain has 5 carbons without any substituent → pentane."
+      });
+      q.push({
+        id: "Q14",
+        subject: "chemistry",
+        topicLabel: "Chemistry · Isomerism",
+        text: "(Isomerism) Which molecular formula can show both chain and position isomerism?",
+        options: ["C₂H₆", "C₃H₈", "C₄H₁₀O", "CH₄"],
+        correctIndex: 2,
+        explanation: "C₄H₁₀O (alcohols/ethers) shows both chain and position isomerism."
+      });
+      q.push({
+        id: "Q15",
+        subject: "chemistry",
+        topicLabel: "Chemistry · GOC",
+        text: "(GOC) Which statement about +I effect (positive inductive effect) is correct?",
+        options: [
+          "It is shown by electron-withdrawing groups only.",
+          "Alkyl groups usually show +I effect.",
+          "–NO₂ shows strong +I effect.",
+          "+I effect operates only in aromatic compounds."
+        ],
+        correctIndex: 1,
+        explanation: "Alkyl groups are electron-releasing via +I effect."
+      });
+      q.push({
+        id: "Q16",
+        subject: "chemistry",
+        topicLabel: "Chemistry · GOC",
+        text: "(GOC / Acidity) Which of the following is the most acidic?",
+        options: ["CH₃–CH₂–OH", "CH≡CH", "CH₄", "NH₃"],
+        correctIndex: 1,
+        explanation: "Terminal alkyne (ethyne) is more acidic due to sp-hybridised carbon."
+      });
+      q.push({
+        id: "Q17",
+        subject: "chemistry",
+        topicLabel: "Chemistry · Bonding",
+        text: "(Chemical Bonding) Which species has a lone pair on the central atom and a trigonal pyramidal shape?",
+        options: ["BF₃", "CH₄", "NH₃", "CO₂"],
+        correctIndex: 2,
+        explanation: "NH₃ has three bond pairs and one lone pair (sp³) giving trigonal pyramidal shape."
+      });
+      q.push({
+        id: "Q18",
+        subject: "chemistry",
+        topicLabel: "Chemistry · IUPAC",
+        text: "(IUPAC) The IUPAC name of CH₃–CH₂–CH₂–CH₃ is:",
+        options: ["Propane", "Butane", "Pentane", "Methylpropane"],
+        correctIndex: 1,
+        explanation: "Straight chain of four carbons with no substituent → butane."
+      });
+      q.push({
+        id: "Q19",
+        subject: "chemistry",
+        topicLabel: "Chemistry · Isomerism",
+        text: "(Isomerism) Which of the following can show geometrical (cis–trans) isomerism?",
+        options: ["CH₃–CH₃", "CH₂=CH₂", "CH₃–CH=CH–CH₃", "CH≡CH"],
+        correctIndex: 2,
+        explanation: "But-2-ene (CH₃–CH=CH–CH₃) can exist as cis and trans isomers."
+      });
+      q.push({
+        id: "Q20",
+        subject: "chemistry",
+        topicLabel: "Chemistry · GOC",
+        text: "(GOC / Resonance) Which statement about resonance is correct?",
+        options: [
+          "Resonance structures are in equilibrium with each other.",
+          "Resonance hybrid is less stable than any canonical form.",
+          "Resonance involves delocalisation of π-electrons.",
+          "All single bonds participate in resonance."
+        ],
+        correctIndex: 2,
+        explanation: "Resonance is delocalisation of π (and sometimes lone-pair) electrons."
+      });
+
+      // PHYSICS (10)
+      q.push({
+        id: "Q21",
+        subject: "physics",
+        topicLabel: "Physics · Dual Nature",
+        text: "(Dual Nature) The de Broglie wavelength of a particle of momentum p is:",
+        options: ["λ = p / h", "λ = h / p", "λ = h p", "λ = h p²"],
+        correctIndex: 1,
+        explanation: "de Broglie relation is λ = h / p."
+      });
+      q.push({
+        id: "Q22",
+        subject: "physics",
+        topicLabel: "Physics · Dual Nature",
+        text: "(Photoelectric Effect) For same frequency, increasing light intensity increases:",
+        options: [
+          "Stopping potential",
+          "Maximum kinetic energy of electrons",
+          "Number of photoelectrons emitted per second",
+          "Work function of the metal"
+        ],
+        correctIndex: 2,
+        explanation: "Higher intensity → more photons → more photoelectrons per second."
+      });
+      q.push({
+        id: "Q23",
+        subject: "physics",
+        topicLabel: "Physics · Atoms",
+        text: "(Atoms) In Bohr’s model, the radius of the nᵗʰ orbit is proportional to:",
+        options: ["n", "1/n", "n²", "1/n²"],
+        correctIndex: 2,
+        explanation: "rₙ ∝ n² for hydrogen-like species."
+      });
+      q.push({
+        id: "Q24",
+        subject: "physics",
+        topicLabel: "Physics · Atoms",
+        text: "(Atoms / Spectra) A transition from n = 4 to n = 2 in hydrogen belongs to:",
+        options: ["Lyman series", "Balmer series", "Paschen series", "Brackett series"],
+        correctIndex: 1,
+        explanation: "Balmer series corresponds to transitions ending at n = 2."
+      });
+      q.push({
+        id: "Q25",
+        subject: "physics",
+        topicLabel: "Physics · Basic Math",
+        text: "(Basic Math / Units) If x is in m and t in s, slope of x–t graph has unit:",
+        options: ["m·s", "m/s", "s/m", "m/s²"],
+        correctIndex: 1,
+        explanation: "Slope = Δx/Δt has unit m/s (velocity)."
+      });
+      q.push({
+        id: "Q26",
+        subject: "physics",
+        topicLabel: "Physics · Dual Nature",
+        text: "(Dual Nature / Threshold) The relation between work function φ and threshold frequency ν₀ is:",
+        options: ["φ = hν₀", "φ = ν₀ / h", "φ = h / ν₀", "φ = hν₀²"],
+        correctIndex: 0,
+        explanation: "At threshold frequency, hν₀ = φ (KEmax = 0)."
+      });
+      q.push({
+        id: "Q27",
+        subject: "physics",
+        topicLabel: "Physics · Dual Nature",
+        text: "(Dual Nature) If kinetic energy of an electron increases, its de Broglie wavelength:",
+        options: ["Increases linearly", "Decreases", "Remains the same", "First increases then decreases"],
+        correctIndex: 1,
+        explanation: "λ = h / √(2mK) ⇒ increasing K decreases λ."
+      });
+      q.push({
+        id: "Q28",
+        subject: "physics",
+        topicLabel: "Physics · Basic Math",
+        text: "(Basic Math / Errors) If Q = a b² / c and % errors in a, b, c are 1%, 2%, 3%, % error in Q is:",
+        options: ["3%", "6%", "8%", "12%"],
+        correctIndex: 2,
+        explanation: "ΔQ/Q = 1 + 2×2 + 3 = 8%."
+      });
+      q.push({
+        id: "Q29",
+        subject: "physics",
+        topicLabel: "Physics · Atoms",
+        text: "(Atoms) According to Bohr, the energy of an electron in a stable orbit is:",
+        options: [
+          "Positive for all orbits",
+          "Zero in ground state",
+          "Negative for all bound states",
+          "Independent of n"
+        ],
+        correctIndex: 2,
+        explanation: "Energy levels of bound electrons are negative (Eₙ < 0)."
+      });
+      q.push({
+        id: "Q30",
+        subject: "physics",
+        topicLabel: "Physics · Atoms",
+        text: "(Atoms / Spectral Lines) When an electron de-excites from n = 4 to n = 1, total different spectral lines:",
+        options: ["3", "4", "6", "5"],
+        correctIndex: 2,
+        explanation: "Number of lines = n(n − 1)/2 = 4×3/2 = 6."
+      });
+
+      return {
+        id: "sample-30",
+        name: "Sample NEET Mock (30Q)",
+        questions: q,
+        marking: { right: 4, wrong: -1 }
+      };
+    }
+
+    // ============ NEET QUESTION BANK ============
+    const neetQuestionBank = [
+      // Biology
+      {
+        subject: "biology",
+        topicLabel: "Biology · Biomolecules",
+        text: "Which of the following is a reducing sugar?",
+        options: ["Sucrose", "Starch", "Cellulose", "Lactose"],
+        correctIndex: 3,
+        explanation: "Lactose has a free aldehyde group in its mutarotating form and acts as a reducing sugar."
+      },
+      {
+        subject: "biology",
+        topicLabel: "Biology · Cell",
+        text: "Which organelle is responsible for packaging and modification of proteins?",
+        options: ["Lysosome", "Golgi apparatus", "Smooth ER", "Ribosome"],
+        correctIndex: 1,
+        explanation: "Golgi apparatus modifies, sorts and packs proteins in vesicles."
+      },
+      {
+        subject: "biology",
+        topicLabel: "Biology · Plant Physiology",
+        text: "Transpiration pull is mainly responsible for ascent of sap in:",
+        options: ["Phloem of herbaceous plants", "Xylem of tall trees", "Phloem of woody plants", "Cambium"],
+        correctIndex: 1,
+        explanation: "In tall trees, cohesion–tension and transpiration pull in xylem account for ascent of sap."
+      },
+      {
+        subject: "biology",
+        topicLabel: "Biology · Genetics",
+        text: "A cross between two organisms resulting in a 9:3:3:1 phenotypic ratio in F₂ generation indicates:",
+        options: [
+          "Monohybrid cross with incomplete dominance",
+          "Dihybrid cross with independent assortment",
+          "Test cross",
+          "Back cross"
+        ],
+        correctIndex: 1,
+        explanation: "9:3:3:1 is the classical ratio of a dihybrid cross with independent assortment."
+      },
+      {
+        subject: "biology",
+        topicLabel: "Biology · Evolution",
+        text: "Industrial melanism observed in peppered moth is an example of:",
+        options: ["Genetic drift", "Directional natural selection", "Mutation pressure", "Sexual selection"],
+        correctIndex: 1,
+        explanation: "Dark forms were selected in polluted areas, an example of directional natural selection."
+      },
+      {
+        subject: "biology",
+        topicLabel: "Biology · Human Physiology",
+        text: "Which part of nephron is primarily responsible for selective reabsorption of glucose?",
+        options: [
+          "Bowman’s capsule",
+          "Proximal convoluted tubule",
+          "Loop of Henle",
+          "Distal convoluted tubule"
+        ],
+        correctIndex: 1,
+        explanation: "Most glucose is reabsorbed in the proximal convoluted tubule by active transport."
+      },
+      {
+        subject: "biology",
+        topicLabel: "Biology · Ecology",
+        text: "The pyramid of biomass in sea is usually:",
+        options: ["Always upright", "Always inverted", "Spindle-shaped", "Irregular"],
+        correctIndex: 1,
+        explanation: "Biomass of phytoplankton is less than that of zooplankton and fishes, giving an inverted pyramid."
+      },
+      {
+        subject: "biology",
+        topicLabel: "Biology · Biotechnology",
+        text: "The first recombinant DNA vaccine approved for human use targeted:",
+        options: ["Polio", "Hepatitis B", "HIV", "Rabies"],
+        correctIndex: 1,
+        explanation: "The recombinant surface antigen-based Hepatitis B vaccine was among the first rDNA vaccines."
+      },
+      {
+        subject: "biology",
+        topicLabel: "Biology · Plant Reproduction",
+        text: "Embryo sac of angiosperms typically contains:",
+        options: [
+          "3 cells and 1 nucleus",
+          "7 cells and 8 nuclei",
+          "8 cells and 7 nuclei",
+          "4 cells and 4 nuclei"
+        ],
+        correctIndex: 1,
+        explanation: "The Polygonum type embryo sac is 7-celled and 8-nucleate."
+      },
+      {
+        subject: "biology",
+        topicLabel: "Biology · Human Reproduction",
+        text: "Corpus luteum in a normal human female is maintained for about 14 days by:",
+        options: ["FSH", "LH", "Progesterone", "Prolactin"],
+        correctIndex: 1,
+        explanation: "LH maintains the corpus luteum during luteal phase for about 14 days."
+      },
+
+      // Chemistry
+      {
+        subject: "chemistry",
+        topicLabel: "Chemistry · Mole Concept",
+        text: "At STP, the volume occupied by 0.5 mol of an ideal gas is approximately:",
+        options: ["11.2 L", "22.4 L", "44.8 L", "5.6 L"],
+        correctIndex: 0,
+        explanation: "1 mol occupies 22.4 L at STP, so 0.5 mol occupies 11.2 L."
+      },
+      {
+        subject: "chemistry",
+        topicLabel: "Chemistry · Thermodynamics",
+        text: "For a spontaneous process at constant temperature and pressure, which condition is correct?",
+        options: [
+          "ΔG < 0",
+          "ΔH = 0",
+          "ΔS = 0",
+          "ΔG > 0"
+        ],
+        correctIndex: 0,
+        explanation: "Negative Gibbs free energy change (ΔG < 0) indicates spontaneity at constant T and P."
+      },
+      {
+        subject: "chemistry",
+        topicLabel: "Chemistry · Equilibrium",
+        text: "For the reaction N₂(g) + 3H₂(g) ⇌ 2NH₃(g), addition of more N₂ at constant temperature will:",
+        options: [
+          "Shift equilibrium to left",
+          "Shift equilibrium to right",
+          "Not affect equilibrium",
+          "Stop the reaction"
+        ],
+        correctIndex: 1,
+        explanation: "According to Le Chatelier’s principle, adding reactant shifts equilibrium towards products."
+      },
+      {
+        subject: "chemistry",
+        topicLabel: "Chemistry · Electrochemistry",
+        text: "In a galvanic cell, the anode is the electrode where:",
+        options: [
+          "Reduction occurs and it is positive",
+          "Oxidation occurs and it is negative",
+          "Oxidation occurs and it is positive",
+          "Reduction occurs and it is negative"
+        ],
+        correctIndex: 1,
+        explanation: "In a galvanic cell, oxidation occurs at anode which is negative."
+      },
+      {
+        subject: "chemistry",
+        topicLabel: "Chemistry · Chemical Kinetics",
+        text: "The order of a reaction with respect to a reactant is defined as:",
+        options: [
+          "Power to which its concentration is raised in rate law",
+          "Number of reactant molecules",
+          "Number of products",
+          "Molecularity of reaction"
+        ],
+        correctIndex: 0,
+        explanation: "Order is the sum of powers of concentration terms in the rate law."
+      },
+      {
+        subject: "chemistry",
+        topicLabel: "Chemistry · p-Block",
+        text: "Which oxide of nitrogen is paramagnetic?",
+        options: ["NO₂", "N₂O", "N₂O₄", "N₂O₅"],
+        correctIndex: 0,
+        explanation: "NO₂ has an unpaired electron and is paramagnetic."
+      },
+      {
+        subject: "chemistry",
+        topicLabel: "Chemistry · s-Block",
+        text: "Alkali metals are stored under kerosene because they:",
+        options: [
+          "Are volatile",
+          "Are highly reactive with water and air",
+          "Have low density",
+          "Decompose in sunlight"
+        ],
+        correctIndex: 1,
+        explanation: "Alkali metals react vigorously with air and moisture, hence stored under kerosene."
+      },
+      {
+        subject: "chemistry",
+        topicLabel: "Chemistry · GOC",
+        text: "The most stable carbocation among the following is:",
+        options: [
+          "CH₃⁺",
+          "CH₃–CH₂⁺",
+          "(CH₃)₂CH⁺",
+          "(CH₃)₃C⁺"
+        ],
+        correctIndex: 3,
+        explanation: "Tertiary carbocation is most stable due to maximum +I effect and hyperconjugation."
+      },
+      {
+        subject: "chemistry",
+        topicLabel: "Chemistry · Alcohols",
+        text: "Lucas reagent is used to distinguish among:",
+        options: [
+          "Primary, secondary and tertiary alcohols",
+          "Alkanes and alkenes",
+          "Aldehydes and ketones",
+          "Haloalkanes"
+        ],
+        correctIndex: 0,
+        explanation: "Lucas test gives turbidity at different rates for 1°, 2°, 3° alcohols."
+      },
+      {
+        subject: "chemistry",
+        topicLabel: "Chemistry · Coordination Compounds",
+        text: "The coordination number of Co in [Co(NH₃)₆]Cl₃ is:",
+        options: ["3", "4", "5", "6"],
+        correctIndex: 3,
+        explanation: "Six NH₃ ligands are coordinated to Co, so coordination number is 6."
+      },
+
+      // Physics
+      {
+        subject: "physics",
+        topicLabel: "Physics · Kinematics",
+        text: "Area under a velocity–time graph represents:",
+        options: ["Acceleration", "Displacement", "Jerk", "Speed"],
+        correctIndex: 1,
+        explanation: "∫v dt gives displacement."
+      },
+      {
+        subject: "physics",
+        topicLabel: "Physics · Laws of Motion",
+        text: "The physical quantity having the unit kg·m/s is:",
+        options: ["Force", "Impulse", "Momentum", "Power"],
+        correctIndex: 2,
+        explanation: "Momentum p = mv has SI unit kg·m/s."
+      },
+      {
+        subject: "physics",
+        topicLabel: "Physics · Work, Energy, Power",
+        text: "A body of mass m moving with speed v has kinetic energy:",
+        options: ["mv²", "½mv²", "mv", "½mv"],
+        correctIndex: 1,
+        explanation: "Kinetic energy = ½mv²."
+      },
+      {
+        subject: "physics",
+        topicLabel: "Physics · Gravitation",
+        text: "If the distance between two masses is doubled, the gravitational force between them becomes:",
+        options: ["Four times", "Twice", "Half", "One-fourth"],
+        correctIndex: 3,
+        explanation: "F ∝ 1/r², so doubling r makes F one-fourth."
+      },
+      {
+        subject: "physics",
+        topicLabel: "Physics · Electrostatics",
+        text: "Electric field inside a conductor in electrostatic equilibrium is:",
+        options: ["Maximum", "Zero", "Infinite", "Depends on shape of conductor"],
+        correctIndex: 1,
+        explanation: "Charge resides on the surface; E inside is zero in electrostatic equilibrium."
+      },
+      {
+        subject: "physics",
+        topicLabel: "Physics · Current Electricity",
+        text: "Ohm’s law is valid for:",
+        options: [
+          "All conductors under all conditions",
+          "Metals at constant temperature",
+          "Semiconductors",
+          "Electrolytes only"
+        ],
+        correctIndex: 1,
+        explanation: "Ohm’s law strictly holds for metallic conductors at constant temperature."
+      },
+      {
+        subject: "physics",
+        topicLabel: "Physics · Magnetism",
+        text: "The SI unit of magnetic field (magnetic flux density) is:",
+        options: ["Tesla", "Weber", "Henry", "Gauss"],
+        correctIndex: 0,
+        explanation: "SI unit of B is tesla (T)."
+      },
+      {
+        subject: "physics",
+        topicLabel: "Physics · EMI & AC",
+        text: "Faraday’s law of electromagnetic induction states that induced EMF is proportional to:",
+        options: [
+          "Rate of change of magnetic flux",
+          "Magnetic field only",
+          "Area of loop only",
+          "Resistance of coil"
+        ],
+        correctIndex: 0,
+        explanation: "E ∝ -dΦ/dt where Φ is magnetic flux."
+      },
+      {
+        subject: "physics",
+        topicLabel: "Physics · Modern Physics",
+        text: "In photoelectric effect, stopping potential depends on:",
+        options: ["Intensity only", "Frequency only", "Work function only", "Area of plate"],
+        correctIndex: 1,
+        explanation: "Stopping potential relates to maximum KE, which depends on frequency."
+      },
+      {
+        subject: "physics",
+        topicLabel: "Physics · Atoms & Nuclei",
+        text: "Binding energy per nucleon is maximum for nuclei of mass number around:",
+        options: ["1", "16", "56", "238"],
+        correctIndex: 2,
+        explanation: "Fe-56 region has maximum binding energy per nucleon."
+      }
+    ];
+
+    function createNeetFullTest180FromBank() {
+      const totalNeeded = 180;
+      const bank = neetQuestionBank;
+      const questions = [];
+
+      if (bank.length === 0) {
+        return {
+          id: "neet-full-empty",
+          name: "NEET Full Test (Empty – Add Questions)",
+          questions: [],
+          marking: { right: 4, wrong: -1 }
+        };
+      }
+
+      for (let i = 0; i < totalNeeded; i++) {
+        const base = bank[i % bank.length];
+        questions.push({
+          id: "N" + (i + 1),
+          subject: base.subject,
+          topicLabel: base.topicLabel,
+          text: base.text,
+          options: base.options.slice(),
+          correctIndex: base.correctIndex,
+          explanation: base.explanation
+        });
+      }
+
+      return {
+        id: "neet-full-template",
+        name: "NEET Full Test (180Q from Bank)",
+        questions,
+        marking: { right: 4, wrong: -1 }
+      };
+    }
+
+    function autoCreateSundayFullTest() {
+      const today = new Date();
+      if (today.getDay() !== 0) return; // 0 = Sunday
+
+      const y = today.getFullYear();
+      const m = String(today.getMonth() + 1).padStart(2, "0");
+      const d = String(today.getDate()).padStart(2, "0");
+      const testName = `NEET Full Test – ${y}-${m}-${d} (180Q)`;
+      const testId = "neet-full-" + y + m + d;
+
+      const already = tests.some((t) => t.id === testId);
+      if (already) return;
+
+      const tmpl = createNeetFullTest180FromBank();
+      tmpl.id = testId;
+      tmpl.name = testName;
+      tests.push(tmpl);
+    }
+
+    // ============ RENDERING ============
+    function renderTestOptions() {
+      testSelect.innerHTML = "";
+      tests.forEach((t, idx) => {
+        const opt = document.createElement("option");
+        opt.value = idx;
+        opt.textContent = t.name;
+        testSelect.appendChild(opt);
+      });
+      testSelect.value = currentTestIndex;
+    }
+
+    function updateEditButtonsVisibility() {
+      const display = currentRole === "host" ? "inline-flex" : "none";
+      document.querySelectorAll(".edit-question-btn").forEach((btn) => {
+        btn.style.display = display;
+      });
+    }
+
+    function openEditDialog(qIndex) {
+      if (currentRole !== "host") {
+        alert("Only host can edit questions.");
+        return;
+      }
+      const test = getCurrentTest();
+      const q = test.questions[qIndex];
+
+      let newText = prompt("Edit question text:", q.text);
+      if (newText !== null && newText.trim() !== "") {
+        q.text = newText.trim();
+      }
+
+      const letters = ["A", "B", "C", "D"];
+      for (let i = 0; i < 4; i++) {
+        let newOpt = prompt(`Edit option ${letters[i]}:`, q.options[i]);
+        if (newOpt !== null && newOpt.trim() !== "") {
+          q.options[i] = newOpt.trim();
+        }
+      }
+
+      let newSubject = prompt(
+        "Edit subject (biology / chemistry / physics / mixed):",
+        q.subject
+      );
+      if (newSubject !== null) {
+        newSubject = newSubject.trim().toLowerCase();
+        if (["biology", "chemistry", "physics", "mixed"].includes(newSubject)) {
+          q.subject = newSubject;
+        } else {
+          alert("Invalid subject; keeping previous.");
+        }
+      }
+
+      let currentCorrectLetter = letters[q.correctIndex] || "A";
+      let newCorrect = prompt(
+        "Correct option (A/B/C/D):",
+        currentCorrectLetter
+      );
+      if (newCorrect !== null) {
+        newCorrect = newCorrect.trim().toUpperCase();
+        const idx = "ABCD".indexOf(newCorrect);
+        if (idx >= 0) {
+          q.correctIndex = idx;
+        } else {
+          alert("Invalid option; keeping previous correct answer.");
+        }
+      }
+
+      let newExp = prompt("Edit explanation:", q.explanation);
+      if (newExp !== null && newExp.trim() !== "") {
+        q.explanation = newExp.trim();
+      }
+
+      renderCurrentTest();
+      alert("Question updated.");
+    }
+
+    function renderCurrentTest() {
+      const test = getCurrentTest();
+      hasSubmitted = false;
+      lastEvaluation = null;
+
+      correctMark = test.marking.right;
+      wrongMark = test.marking.wrong;
+      marksRightInput.value = correctMark;
+      marksWrongInput.value = wrongMark;
+
+      quizForm.innerHTML = "";
+
+      test.questions.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "question-card";
+        card.dataset.subject = q.subject;
+
+        const header = document.createElement("div");
+        header.className = "question-header";
+
+        const title = document.createElement("div");
+        title.className = "question-title";
+        title.innerHTML = `Q${idx + 1}. ${q.text}`;
+
+        const meta = document.createElement("div");
+        meta.className = "question-meta";
+
+        const topicSpan = document.createElement("span");
+        topicSpan.className = "topic-pill";
+        topicSpan.textContent = q.topicLabel;
+        meta.appendChild(topicSpan);
+
+        const editBtn = document.createElement("button");
+        editBtn.type = "button";
+        editBtn.textContent = "✏️ Edit";
+        editBtn.className = "role-btn edit-question-btn";
+        editBtn.style.fontSize = "0.7rem";
+        editBtn.dataset.qIndex = idx;
+        editBtn.addEventListener("click", () => openEditDialog(idx));
+        editBtn.style.display = currentRole === "host" ? "inline-flex" : "none";
+        meta.appendChild(editBtn);
+
+        header.appendChild(title);
+        header.appendChild(meta);
+
+        const optionsDiv = document.createElement("div");
+        optionsDiv.className = "options";
+        const name = "q" + (idx + 1);
+        const letter = ["A", "B", "C", "D"];
+
+        q.options.forEach((optText, optIdx) => {
+          const label = document.createElement("label");
+          label.className = "option-label";
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = name;
+          input.value = letter[optIdx];
+          const textNode = document.createTextNode(
+            " " + letter[optIdx] + ". " + optText
+          );
+          label.appendChild(input);
+          label.appendChild(textNode);
+          optionsDiv.appendChild(label);
+        });
+
+        const ansDiv = document.createElement("div");
+        ansDiv.className = "correct-answer-text";
+        ansDiv.dataset.correctIndex = q.correctIndex;
+        ansDiv.hidden = true;
+        const correctLetter = ["A", "B", "C", "D"][q.correctIndex];
+        ansDiv.textContent = `Correct: ${correctLetter}. ${q.explanation}`;
+
+        card.appendChild(header);
+        card.appendChild(optionsDiv);
+        card.appendChild(ansDiv);
+        quizForm.appendChild(card);
+      });
+
+      resetVisual();
+      updateMarksDisplay();
+      restartTimer();
+      updateEditButtonsVisibility();
+    }
+
+    // ============ TIMER & RESET ============
+    function restartTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      const test = getCurrentTest();
+      timerSeconds = test.questions.length * 60;
+      updateTimerDisplay();
+      timerInterval = setInterval(() => {
+        if (hasSubmitted) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          return;
+        }
+        timerSeconds--;
+        if (timerSeconds <= 0) {
+          timerSeconds = 0;
+          updateTimerDisplay();
+          clearInterval(timerInterval);
+          timerInterval = null;
+          if (!hasSubmitted) {
+            evaluateQuiz();
+            hasSubmitted = true;
+            lockTest();
+            alert("⏰ Time is up! Test has been submitted automatically.");
+          }
+        } else {
+          updateTimerDisplay();
+        }
+      }, 1000);
+    }
+
+    function lockTest() {
+      quizForm
+        .querySelectorAll('input[type="radio"]')
+        .forEach((input) => (input.disabled = true));
+      if (currentRole === "student") {
+        submitBtn.disabled = true;
+        resetBtn.disabled = true;
+      }
+    }
+
+    function resetVisual() {
+      quizForm.reset();
+      document
+        .querySelectorAll(".question-card")
+        .forEach((card) => card.classList.remove("correct", "incorrect"));
+      document
+        .querySelectorAll(".correct-answer-text")
+        .forEach((el) => (el.hidden = true));
+
+      const test = getCurrentTest();
+      const totalQ = test.questions.length;
+      scoreChip.textContent = `Score: 0 / ${correctMark * totalQ}`;
+      attemptChip.textContent = "Attempted: 0 (Correct: 0, Wrong: 0)";
+      accuracyChip.textContent = "Accuracy: 0%";
+      accuracyChip.classList.add("ok");
+      accuracyChip.classList.remove("error");
+
+      bioChip.textContent = "Bio: 0/0 (0/0)";
+      chemChip.textContent = "Chem: 0/0 (0/0)";
+      phyChip.textContent = "Phy: 0/0 (0/0)";
+
+      submitBtn.disabled = false;
+      resetBtn.disabled = false;
+    }
+
+    // ============ EVALUATION & SECTION STATS ============
+    function evaluateQuiz() {
+      const test = getCurrentTest();
+      let netScore = 0;
+      let attempted = 0;
+      let correctCount = 0;
+      let wrongCount = 0;
+
+      let bioTotalQ = 0,
+        chemTotalQ = 0,
+        phyTotalQ = 0;
+      let bioCorrectQ = 0,
+        chemCorrectQ = 0,
+        phyCorrectQ = 0;
+      let bioWrongQ = 0,
+        chemWrongQ = 0,
+        phyWrongQ = 0;
+      let bioScore = 0,
+        chemScore = 0,
+        phyScore = 0;
+
+      const cards = document.querySelectorAll(".question-card");
+      const questionDetails = [];
+
+      cards.forEach((card, idx) => {
+        card.classList.remove("correct", "incorrect");
+        const q = test.questions[idx];
+        const qName = "q" + (idx + 1);
+        const selected = quizForm.querySelector(
+          `input[name="${qName}"]:checked`
+        );
+        const subject = q.subject;
+
+        if (subject === "biology") bioTotalQ++;
+        else if (subject === "chemistry") chemTotalQ++;
+        else if (subject === "physics") phyTotalQ++;
+
+        const letters = ["A", "B", "C", "D"];
+        const correctLetter = letters[q.correctIndex];
+        const selectedValue = selected ? selected.value : "";
+        let isCorrect = null;
+
+        if (!selected) {
+          questionDetails.push({
+            index: idx + 1,
+            id: q.id || "",
+            subject,
+            topicLabel: q.topicLabel,
+            text: q.text,
+            selected: "",
+            correctOption: correctLetter,
+            isCorrect: null
+          });
+          return;
+        }
+
+        attempted++;
+        isCorrect = selectedValue === correctLetter;
+
+        if (isCorrect) {
+          correctCount++;
+          netScore += correctMark;
+          card.classList.add("correct");
+
+          if (subject === "biology") {
+            bioCorrectQ++;
+            bioScore += correctMark;
+          } else if (subject === "chemistry") {
+            chemCorrectQ++;
+            chemScore += correctMark;
+          } else if (subject === "physics") {
+            phyCorrectQ++;
+            phyScore += correctMark;
+          }
+        } else {
+          wrongCount++;
+          netScore += wrongMark;
+          card.classList.add("incorrect");
+
+          if (subject === "biology") {
+            bioWrongQ++;
+            bioScore += wrongMark;
+          } else if (subject === "chemistry") {
+            chemWrongQ++;
+            chemScore += wrongMark;
+          } else if (subject === "physics") {
+            phyWrongQ++;
+            phyScore += wrongMark;
+          }
+        }
+
+        questionDetails.push({
+          index: idx + 1,
+          id: q.id || "",
+          subject,
+          topicLabel: q.topicLabel,
+          text: q.text,
+          selected: selectedValue,
+          correctOption: correctLetter,
+          isCorrect
+        });
+      });
+
+      const total = test.questions.length;
+      const accuracy = total ? Math.round((correctCount / total) * 100) : 0;
+      const maxMarks = correctMark * total;
+
+      scoreChip.textContent = `Score: ${netScore} / ${maxMarks}`;
+      attemptChip.textContent = `Attempted: ${attempted} (Correct: ${correctCount}, Wrong: ${wrongCount})`;
+      accuracyChip.textContent = `Accuracy: ${accuracy}%`;
+      accuracyChip.classList.toggle("ok", accuracy >= 50);
+      accuracyChip.classList.toggle("error", accuracy < 50);
+
+      const bioMax = bioTotalQ * correctMark;
+      const chemMax = chemTotalQ * correctMark;
+      const phyMax = phyTotalQ * correctMark;
+
+      bioChip.textContent = `Bio: ${bioCorrectQ}/${bioTotalQ || 0} (${bioScore}/${bioMax || 0})`;
+      chemChip.textContent = `Chem: ${chemCorrectQ}/${chemTotalQ || 0} (${chemScore}/${chemMax || 0})`;
+      phyChip.textContent = `Phy: ${phyCorrectQ}/${phyTotalQ || 0} (${phyScore}/${phyMax || 0})`;
+
+      lastEvaluation = {
+        timestamp: new Date().toISOString(),
+        testId: test.id,
+        testName: test.name,
+        totalQuestions: total,
+        attempted,
+        correct: correctCount,
+        wrong: wrongCount,
+        netScore,
+        maxMarks,
+        accuracy,
+        marking: { right: correctMark, wrong: wrongMark },
+        sections: {
+          biology: {
+            totalQ: bioTotalQ,
+            correctQ: bioCorrectQ,
+            wrongQ: bioWrongQ,
+            score: bioScore,
+            maxMarks: bioMax
+          },
+          chemistry: {
+            totalQ: chemTotalQ,
+            correctQ: chemCorrectQ,
+            wrongQ: chemWrongQ,
+            score: chemScore,
+            maxMarks: chemMax
+          },
+          physics: {
+            totalQ: phyTotalQ,
+            correctQ: phyCorrectQ,
+            wrongQ: phyWrongQ,
+            score: phyScore,
+            maxMarks: phyMax
+          }
+        },
+        questions: questionDetails
+      };
+    }
+
+    // ============ EXPORT CSV ============
+    function handleExport() {
+      if (currentRole !== "host") {
+        alert("Only host (with PIN) can export results.");
+        return;
+      }
+      if (!lastEvaluation) {
+        evaluateQuiz();
+        if (!lastEvaluation) {
+          alert("No evaluation data available.");
+          return;
+        }
+      }
+      const ev = lastEvaluation;
+      const lines = [];
+
+      lines.push("Summary");
+      lines.push(
+        [
+          "Test Name",
+          "Timestamp",
+          "Total Questions",
+          "Attempted",
+          "Correct",
+          "Wrong",
+          "Score",
+          "Max Marks",
+          "Accuracy (%)",
+          "Mark Right",
+          "Mark Wrong"
+        ]
+          .map(csvEscape)
+          .join(",")
+      );
+      lines.push(
+        [
+          ev.testName,
+          ev.timestamp,
+          ev.totalQuestions,
+          ev.attempted,
+          ev.correct,
+          ev.wrong,
+          ev.netScore,
+          ev.maxMarks,
+          ev.accuracy,
+          ev.marking.right,
+          ev.marking.wrong
+        ]
+          .map(csvEscape)
+          .join(",")
+      );
+
+      lines.push("");
+      lines.push("Section-wise Summary");
+      lines.push(
+        [
+          "Section",
+          "Total Questions",
+          "Correct",
+          "Wrong",
+          "Score",
+          "Max Marks"
+        ]
+          .map(csvEscape)
+          .join(",")
+      );
+
+      const sec = ev.sections;
+      [["Biology", "biology"], ["Chemistry", "chemistry"], ["Physics", "physics"]].forEach(
+        ([label, key]) => {
+          const s = sec[key];
+          lines.push(
+            [
+              label,
+              s.totalQ,
+              s.correctQ,
+              s.wrongQ,
+              s.score,
+              s.maxMarks
+            ]
+              .map(csvEscape)
+              .join(",")
+          );
+        }
+      );
+
+      lines.push("");
+      lines.push("Per Question Detail");
+      lines.push(
+        [
+          "Q No",
+          "Question ID",
+          "Subject",
+          "Topic",
+          "Question Text",
+          "Selected Option",
+          "Correct Option",
+          "Is Correct"
+        ]
+          .map(csvEscape)
+          .join(",")
+      );
+
+      ev.questions.forEach((q) => {
+        lines.push(
+          [
+            q.index,
+            q.id,
+            q.subject,
+            q.topicLabel,
+            q.text,
+            q.selected,
+            q.correctOption,
+            q.isCorrect === null ? "" : q.isCorrect ? "Yes" : "No"
+          ]
+            .map(csvEscape)
+            .join(",")
+        );
+      });
+
+      const csvContent = lines.join("\r\n");
+      const blob = new Blob([csvContent], {
+        type: "text/csv;charset=utf-8;"
+      });
+      const url = URL.createObjectURL(blob);
+
+      const safeName = (ev.testName || "NEET_Test")
+        .replace(/[^a-z0-9\-]+/gi, "_")
+        .slice(0, 80);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = safeName + "_results.csv";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // ============ HANDLERS ============
+    function handleSubmit() {
+      if (hasSubmitted && currentRole === "student") {
+        alert("You have already submitted this test. Students cannot submit again.");
+        return;
+      }
+      evaluateQuiz();
+      hasSubmitted = true;
+      if (currentRole === "student") {
+        lockTest();
+      }
+    }
+
+    function handleReset() {
+      if (currentRole === "student" && hasSubmitted) {
+        alert("Students cannot reset after submitting. Ask the host to reset.");
+        return;
+      }
+      hasSubmitted = false;
+      lastEvaluation = null;
+      resetVisual();
+      quizForm
+        .querySelectorAll('input[type="radio"]')
+        .forEach((input) => (input.disabled = false));
+      restartTimer();
+    }
+
+    function toggleExplanations() {
+      document
+        .querySelectorAll(".correct-answer-text")
+        .forEach((el) => {
+          el.hidden = !el.hidden;
+        });
+    }
+
+    // ============ FILTERS ============
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    filterButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const filter = btn.getAttribute("data-filter");
+        filterButtons.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        document.querySelectorAll(".question-card").forEach((card) => {
+          const subject = card.getAttribute("data-subject");
+          if (filter === "all" || subject === filter || subject === "mixed") {
+            card.style.display = "";
+          } else {
+            card.style.display = "none";
+          }
+        });
+      });
+    });
+
+    // ============ ROLES & MARKING ============
+    studentModeBtn.addEventListener("click", () => {
+      currentRole = "student";
+      studentModeBtn.classList.add("active-role");
+      hostModeBtn.classList.remove("active-role");
+      roleLabel.textContent = "(Current: Student)";
+      marksEditPanel.style.display = "none";
+      newTestBtn.disabled = true;
+      updateEditButtonsVisibility();
+    });
+
+    hostModeBtn.addEventListener("click", () => {
+      const pin = prompt("Enter Host PIN:");
+      if (pin === "NEET123") {
+        currentRole = "host";
+        hostModeBtn.classList.add("active-role");
+        studentModeBtn.classList.remove("active-role");
+        roleLabel.textContent = "(Current: Host)";
+        submitBtn.disabled = false;
+        resetBtn.disabled = false;
+        marksEditPanel.style.display = "flex";
+        newTestBtn.disabled = false;
+        updateEditButtonsVisibility();
+      } else if (pin !== null) {
+        alert("Incorrect PIN.");
+      }
+    });
+
+    applyMarksBtn.addEventListener("click", () => {
+      if (currentRole !== "host") {
+        alert("Only host can change marking scheme.");
+        return;
+      }
+      const r = parseFloat(marksRightInput.value);
+      const w = parseFloat(marksWrongInput.value);
+      if (isNaN(r) || isNaN(w)) {
+        alert("Enter valid numeric values for marks.");
+        return;
+      }
+      correctMark = r;
+      wrongMark = w;
+      const test = getCurrentTest();
+      test.marking.right = r;
+      test.marking.wrong = w;
+      updateMarksDisplay();
+      if (hasSubmitted) {
+        evaluateQuiz();
+      } else {
+        resetVisual();
+      }
+    });
+
+    // ============ TEST MANAGEMENT ============
+    testSelect.addEventListener("change", () => {
+      currentTestIndex = parseInt(testSelect.value, 10);
+      renderCurrentTest();
+    });
+
+    newTestBtn.addEventListener("click", () => {
+      if (currentRole !== "host") {
+        alert("Only host can create new tests.");
+        return;
+      }
+      const name = prompt("Enter new test name:");
+      if (!name) return;
+      const qStr = prompt("Enter number of questions for this test:", "30");
+      if (!qStr) return;
+      const numQ = parseInt(qStr, 10);
+      if (!numQ || numQ <= 0) {
+        alert("Please enter a valid positive number of questions.");
+        return;
+      }
+
+      const q = [];
+      for (let i = 0; i < numQ; i++) {
+        q.push({
+          id: "C" + (i + 1),
+          subject: "mixed",
+          topicLabel: "Custom Test",
+          text: `Q${i + 1}. (Custom) Add your question here.`,
+          options: ["Option A", "Option B", "Option C", "Option D"],
+          correctIndex: 0,
+          explanation: "Default correct answer is A; host can change using Edit."
+        });
+      }
+
+      const newTest = {
+        id: "custom-" + Date.now(),
+        name,
+        questions: q,
+        marking: { right: 4, wrong: -1 }
+      };
+
+      tests.push(newTest);
+      currentTestIndex = tests.length - 1;
+      renderTestOptions();
+      renderCurrentTest();
+      alert(`New test "${name}" created with ${numQ} editable questions.`);
+    });
+
+    // ============ INIT ============
+    function init() {
+      tests.push(createSample30QTest());
+      autoCreateSundayFullTest();
+      tests.push(createNeetFullTest180FromBank());
+
+      currentTestIndex = tests.length - 1;
+      renderTestOptions();
+      renderCurrentTest();
+      newTestBtn.disabled = true;
+    }
+
+    submitBtn.addEventListener("click", handleSubmit);
+    resetBtn.addEventListener("click", handleReset);
+    toggleExplainBtn.addEventListener("click", toggleExplanations);
+    exportBtn.addEventListener("click", handleExport);
+
+    init();
+  </script>
+</body>
+</html>
